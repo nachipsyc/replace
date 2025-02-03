@@ -11,7 +11,7 @@ import (
 )
 
 var dir string
-var hook_word string
+var hookWord string
 
 func main() {
 	// コマンドライン引数を明示
@@ -27,7 +27,7 @@ func main() {
 	}
 
 	dir = *dirPtr
-	hook_word = *hookWordPtr
+	hookWord = *hookWordPtr
 
 	// 対象ディレクトリの中の全ファイルを取得([]fs.DirEntry)
 	files, err := getFiles(dir)
@@ -36,17 +36,17 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// 取得したファイルからJPEGファイルのみを抽出([]os.FileInfo)
-	jpeg_files := extractJpegFiles(files)
+	// 取得したファイルからJPEGファイルのみを抽出([]fs.DirEntry)
+	jpegFiles := extractJpegFiles(files)
 
 	// ファイルをリネーム
-	renameFiles(jpeg_files, hook_word)
+	renameFiles(jpegFiles, hookWord)
 }
 
 // used by main()
-func getFiles(source_dir string) ([]fs.DirEntry, error) {
+func getFiles(sourceDir string) ([]fs.DirEntry, error) {
 	// 対象ディレクトリの中のファイル全てを取得、格納
-	files, err := os.ReadDir(source_dir)
+	files, err := os.ReadDir(sourceDir)
 
 	// エラーがあれば"err"を返す
 	if err != nil {
@@ -58,36 +58,36 @@ func getFiles(source_dir string) ([]fs.DirEntry, error) {
 
 // used by main()
 func extractJpegFiles(files []fs.DirEntry) []fs.DirEntry {
-	var jpeg_images []fs.DirEntry
+	var jpegImages []fs.DirEntry
 	for _, file := range files {
 		switch filepath.Ext(file.Name()) {
 		case ".jpeg", ".jpg", ".JPG":
-			jpeg_images = append(jpeg_images, file)
+			jpegImages = append(jpegImages, file)
 		default:
 		}
 	}
 
-	return jpeg_images
+	return jpegImages
 }
 
 // used by main()
-func renameFiles(jpeg_files []fs.DirEntry, hook_word string) {
-	for _, jpeg_file := range jpeg_files {
-		original_file_name := jpeg_file.Name()
+func renameFiles(jpegFiles []fs.DirEntry, hookWord string) {
+	for _, jpegFile := range jpegFiles {
+		originalFileName := jpegFile.Name()
 
 		// フックワードを含む場合のみ処理
-		if strings.Contains(original_file_name, hook_word) {
-			new_file_name := strings.Replace(original_file_name, hook_word, "", 1)
+		if strings.Contains(originalFileName, hookWord) {
+			newFileName := strings.Replace(originalFileName, hookWord, "", 1)
 
 			// ファイル名のみ変更 (画像データは変更しない)
-			oldPath := filepath.Join(dir, original_file_name)
-			newPath := filepath.Join(dir, new_file_name)
+			oldPath := filepath.Join(dir, originalFileName)
+			newPath := filepath.Join(dir, newFileName)
 
 			err := os.Rename(oldPath, newPath)
 			if err != nil {
 				log.Printf("failed: %s -> %s, エラー: %v\n", oldPath, newPath, err)
 			} else {
-				fmt.Printf("scraping: %s -> %s\n", original_file_name, new_file_name)
+				fmt.Printf("success: %s -> %s\n", originalFileName, newFileName)
 			}
 		}
 	}
