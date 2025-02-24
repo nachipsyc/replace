@@ -12,22 +12,25 @@ import (
 
 var dir string
 var hookWord string
+var newWord string
 
 func main() {
 	// コマンドライン引数を明示
 	dirPtr := flag.String("dir", "", "対象ディレクトリのパス")
-	hookWordPtr := flag.String("word", "", "削除するフックワード")
+	hookWordPtr := flag.String("word", "", "置換対象のフックワード")
+	newWordPtr := flag.String("new", "", "新しいキーワード")
 
 	// 入力をパース
 	flag.Parse()
 
 	// 引数が正しくない場合は実行方法を明示
-	if *dirPtr == "" || *hookWordPtr == "" {
-		log.Fatal("使用方法: go run scrape.go -dir=<ディレクトリ> -word=<フックワード>")
+	if *dirPtr == "" || *hookWordPtr == "" || *newWordPtr == "" {
+		log.Fatal("使用方法: go run scrape.go -dir=<ディレクトリ> -word=<フックワード> -new=<新しいキーワード>")
 	}
 
 	dir = *dirPtr
 	hookWord = *hookWordPtr
+	newWord = *newWordPtr
 
 	// 対象ディレクトリの中の全ファイルを取得([]fs.DirEntry)
 	files, err := getFiles(dir)
@@ -40,7 +43,7 @@ func main() {
 	jpegFiles := extractJpegFiles(files)
 
 	// ファイルをリネーム
-	renameFiles(jpegFiles, hookWord)
+	renameFiles(jpegFiles, hookWord, newWord)
 }
 
 // used by main()
@@ -71,13 +74,13 @@ func extractJpegFiles(files []fs.DirEntry) []fs.DirEntry {
 }
 
 // used by main()
-func renameFiles(jpegFiles []fs.DirEntry, hookWord string) {
+func renameFiles(jpegFiles []fs.DirEntry, hookWord string, newWord string) {
 	for _, jpegFile := range jpegFiles {
 		originalFileName := jpegFile.Name()
 
 		// フックワードを含む場合のみ処理
 		if strings.Contains(originalFileName, hookWord) {
-			newFileName := strings.Replace(originalFileName, hookWord, "", 1)
+			newFileName := strings.Replace(originalFileName, hookWord, newWord, 1)
 
 			// ファイル名のみ変更 (画像データは変更しない)
 			oldPath := filepath.Join(dir, originalFileName)
