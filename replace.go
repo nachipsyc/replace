@@ -39,11 +39,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// 取得したファイルからJPEGファイルのみを抽出([]fs.DirEntry)
-	jpegFiles := extractJpegFiles(files)
-
 	// ファイルをリネーム
-	renameFiles(jpegFiles, hookWord, newWord)
+	renameFiles(files, hookWord, newWord)
 }
 
 // used by main()
@@ -57,20 +54,6 @@ func getFiles(sourceDir string) ([]fs.DirEntry, error) {
 	}
 
 	return files, nil
-}
-
-// used by main()
-func extractJpegFiles(files []fs.DirEntry) []fs.DirEntry {
-	var jpegImages []fs.DirEntry
-	for _, file := range files {
-		switch filepath.Ext(file.Name()) {
-		case ".jpeg", ".jpg", ".JPG":
-			jpegImages = append(jpegImages, file)
-		default:
-		}
-	}
-
-	return jpegImages
 }
 
 // used by main()
