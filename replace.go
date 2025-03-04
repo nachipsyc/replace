@@ -20,12 +20,20 @@ func main() {
 	hookWordPtr := flag.String("word", "", "置換対象のフックワード")
 	newWordPtr := flag.String("new", "", "新しいキーワード")
 
+	// flag.Parseの前にフラグの区切り文字を空文字に設定
+	flag.CommandLine.SetOutput(os.Stdout)
+	oldUsage := flag.CommandLine.Usage
+	flag.CommandLine.Usage = func() {
+		oldUsage()
+		os.Exit(1)
+	}
+
 	// 入力をパース
 	flag.Parse()
 
 	// 引数が正しくない場合は実行方法を明示
 	if *dirPtr == "" || *hookWordPtr == "" || *newWordPtr == "" {
-		log.Fatal("使用方法: go run scrape.go -dir=<ディレクトリ> -word=<フックワード> -new=<新しいキーワード>")
+		log.Fatal("使用方法: go run replace.go -dir=<ディレクトリ> -word=<フックワード> -new=<新しいキーワード>")
 	}
 
 	dir = *dirPtr
