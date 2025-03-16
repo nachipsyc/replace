@@ -86,5 +86,5 @@ func renameFiles(jpegFiles []fs.DirEntry, hookWord string, newWord string) {
 		}
 	}
 
-	fmt.Println("scrape completed!!")
+	fmt.Println("replace completed!!")
 }
