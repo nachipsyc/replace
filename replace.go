@@ -12,13 +12,13 @@ import (
 
 var dir string
 var hookWord string
-var newWord string
+var altWord string
 
 func main() {
 	// コマンドライン引数を明示
 	dirPtr := flag.String("dir", "", "対象ディレクトリのパス")
-	hookWordPtr := flag.String("word", "", "置換対象のフックワード")
-	newWordPtr := flag.String("new", "", "新しいキーワード")
+	hookWordPtr := flag.String("hook", "", "置換対象のフックワード")
+	altWordPtr := flag.String("alt", "", "新しいキーワード")
 
 	// flag.Parseの前にフラグの区切り文字を空文字に設定
 	flag.CommandLine.SetOutput(os.Stdout)
@@ -32,13 +32,13 @@ func main() {
 	flag.Parse()
 
 	// 引数が正しくない場合は実行方法を明示
-	if *dirPtr == "" || *hookWordPtr == "" || *newWordPtr == "" {
-		log.Fatal("使用方法: go run replace.go -dir=<ディレクトリ> -word=<フックワード> -new=<新しいキーワード>")
+	if *dirPtr == "" || *hookWordPtr == "" || *altWordPtr == "" {
+		log.Fatal("使用方法: go run replace.go -dir=<ディレクトリ> -hook=<フックワード> -alt=<新しいキーワード>")
 	}
 
 	dir = *dirPtr
 	hookWord = *hookWordPtr
-	newWord = *newWordPtr
+	altWord = *altWordPtr
 
 	// 対象ディレクトリの中の全ファイルを取得([]fs.DirEntry)
 	files, err := getFiles(dir)
@@ -48,7 +48,7 @@ func main() {
 	}
 
 	// ファイルをリネーム
-	renameFiles(files, hookWord, newWord)
+	renameFiles(files, hookWord, altWord)
 }
 
 // used by main()
