@@ -1,5 +1,0 @@
-Command Error: 引数 '-hookWord=.j' の値はダブルクオーテーションで囲む必要があります。
-使い方:
-  -targetDir=<path>  : 入力画像ディレクトリのパス
-  -hookWord=<word> : 置き換えるワード
-  -altWord=<word> : 代わりのワード
