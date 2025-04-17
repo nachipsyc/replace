@@ -39,7 +39,6 @@ func main() {
 	// 入力をパース
 	flag.Parse()
 
-	// ディレクトリ内のファイルを取得
 	files, err := os.ReadDir(targetDir)
 	if err != nil {
 		fmt.Printf("Read Error: 入力ディレクトリを読み込めません: %v\n", err)
